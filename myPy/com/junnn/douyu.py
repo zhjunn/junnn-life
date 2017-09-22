@@ -34,7 +34,7 @@ port = 8601
 
 type_ = re.compile('type@=.*/?')
 
-file = open('d://testB.txt', 'ab')
+# file = open('d://testB.txt', 'ab')
 
 health_flag = 0
 
