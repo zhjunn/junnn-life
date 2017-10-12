@@ -3,7 +3,7 @@
 import multiprocessing
 import re
 import socket
-from pymongo import MongoClient
+# from pymongo import MongoClient
 import sys
 
 import os
@@ -11,10 +11,10 @@ import os
 import time
 
 # 连接mongodb数据库
-mc = MongoClient('mongodb://mini1:27017/')
-
-db = mc.douyuMsg
-txt_coll = db.message
+# mc = MongoClient('mongodb://mini1:27017/')
+#
+# db = mc.douyuMsg
+# txt_coll = db.message
 
 
 class Tcp_connect(object):
@@ -100,7 +100,7 @@ def go(roomId, client):
             while len(data) < data_length:
                 data = data + client.recv(data_length - len(data))
             message = fxl(data)
-            txt_coll.insert({'roomId': roomId, 'msg': message})
+            # txt_coll.insert({'roomId': roomId, 'msg': message})
             code = message.get('code')
             if None is not code:
                 return 1
