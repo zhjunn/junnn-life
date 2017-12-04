@@ -10,6 +10,7 @@ import os
 
 import time
 
+
 # 连接mongodb数据库
 # mc = MongoClient('mongodb://mini1:27017/')
 #
@@ -36,7 +37,44 @@ type_ = re.compile('type@=.*/?')
 
 # file = open('d://testB.txt', 'ab')
 
-health_flag = 0
+# 礼物
+giftDict = {"1005": "超级火箭", "196": "火箭", "195": "飞机", "750": "办卡"}
+
+# 房间号
+roomId = 196
+# 所有动作监控
+spCheck = True
+spList = ["觉小牙biubiu", "yyfyyf1234", "小缘", "974897847"]
+# 弹幕监控
+txtCheck = True
+nameD = ["小缘", "974897847"]
+# 礼物监控
+dgbCheck = True
+dgbList = ["1005", "196", "195", "750"]
+# 礼物人监控
+dgbPCheck = False
+dgbPList = ["974897847"]
+# 牌子监控
+pzCheck = False
+pzList = ["196"]
+
+# 监控总开关
+check = True
+
+
+def checkThing(message):
+    flag = True
+    if flag:
+        flag = monitoring(spCheck, message, spList, "nn", None)
+    if flag:
+        flag = monitoring(txtCheck, message, nameD, "nn", "chatmsg")
+    if flag:
+        flag = monitoring(dgbCheck, message, dgbList, "gfid", "dgb")
+    if flag:
+        flag = monitoring(dgbPCheck, message, dgbPList, "nn", "dgb")
+    if flag:
+        flag = monitoring(pzCheck, message, pzList, "bnn", "chatmsg")
+    return flag
 
 
 def fxl(msg):
@@ -78,7 +116,7 @@ def sendmsg(msgstr, client):
 def keeplive(client):
     while True:
         msg = 'type@=keeplive/tick@=' + str(int(time.time())) + '/\x00'
-        print('init live')
+        # print('init live')
         sendmsg(msg, client)
         time.sleep(15)
 
@@ -104,9 +142,10 @@ def go(roomId, client):
             code = message.get('code')
             if None is not code:
                 return 1
-            if 'chatmsg' == message.get('type'):
-                print('%s : %s' % (message.get('nn'), message.get('txt')))
-                # print(message)
+            if check:
+                checkThing(message)
+            elif "chatmsg" == message.get("type"):
+                doSomething(message, "chatmsg")
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -116,11 +155,39 @@ def go(roomId, client):
     return 1
 
 
+def monitoring(open, message, nameList, monitorType, sType):
+    type = message.get("type")
+    nn = message.get(monitorType)
+    if not open:
+        return True
+    else:
+        if (sType is None or type == sType) and nn in nameList:
+            doSomething(message, type)
+            return False
+        else:
+            return True
+
+
+def doSomething(message, monitorType):
+    nn = message.get("nn")
+    if "chatmsg" == monitorType:
+        print('【%s-%s】%s[%s] : %s' % (
+            message.get("bnn"), message.get("bl"), message.get("level"), nn, message.get('txt')))
+        # print(message)
+    elif "dgb" == monitorType:
+        gfid = str(message.get("gfid"))
+        gf = giftDict.get(gfid, gfid)
+        print('【%s】%s-%s %s[%s]' % (gf, message.get("bnn"), message.get("bl"), message.get("level"), nn))
+        # print(message)
+    else:
+        print("sp", message)
+
+
 if __name__ == '__main__':
     while True:
         c = Tcp_connect(host, port)
 
-        p1 = multiprocessing.Process(target=go, args=(58428, c.client))
+        p1 = multiprocessing.Process(target=go, args=(roomId, c.client))
         p2 = multiprocessing.Process(target=keeplive, args=(c.client,))
         p1.start()
         p2.start()
