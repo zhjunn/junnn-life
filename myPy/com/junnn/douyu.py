@@ -39,15 +39,16 @@ type_ = re.compile('type@=.*/?')
 
 # 礼物
 giftDict = {"1005": "超级火箭", "196": "火箭", "195": "飞机", "750": "办卡"}
+# 女流 156277， yyf 58428，zard 60937,nado 458638
 
 # 房间号
-roomId = 196
+roomId = 58428
 # 所有动作监控
 spCheck = True
-spList = ["觉小牙biubiu", "yyfyyf1234", "小缘", "974897847"]
+spList = ["inflame丶hyz", "zard1991", "女流", "觉小牙biubiu", "yyfyyf1234", "小缘", "974897847"]
 # 弹幕监控
 txtCheck = True
-nameD = ["小缘", "974897847"]
+nameD = ["女流", "小缘", "974897847"]
 # 礼物监控
 dgbCheck = True
 dgbList = ["1005", "196", "195", "750"]
@@ -55,8 +56,8 @@ dgbList = ["1005", "196", "195", "750"]
 dgbPCheck = False
 dgbPList = ["974897847"]
 # 牌子监控
-pzCheck = False
-pzList = ["196"]
+pzCheck = True
+pzList = ["196", "豆霸霸", "一发"]
 
 # 监控总开关
 check = True
